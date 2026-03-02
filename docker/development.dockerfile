@@ -39,7 +39,7 @@ RUN apt-get update &&\
     python3.11-distutils &&\
     rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 - --ignore-installed
 RUN mkdir -p /tmp/R && chmod 777 /tmp/R
 ENV R_LIBS_USER=/usr/local/lib/R/site-library
 ENV POETRY_HOME="/opt/poetry"
@@ -87,7 +87,7 @@ RUN apt-get update && \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 - --ignore-installed
 WORKDIR /app
 COPY --from=builder /usr/local/lib/R/site-library /usr/local/lib/R/site-library
 COPY --from=builder /app/venv /app/venv

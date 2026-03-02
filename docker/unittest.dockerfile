@@ -42,7 +42,7 @@ RUN apt-get update &&\
 
 # Set Python 3.11 as default
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 - --ignore-installed
 
 # Setup R environment and temp directories
 RUN mkdir -p /tmp/R && chmod 777 /tmp/R
