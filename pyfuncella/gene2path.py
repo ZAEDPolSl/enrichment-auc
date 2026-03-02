@@ -120,7 +120,13 @@ def _apply_pathway_filtering(genesets, genes, filt_min, filt_max, filt_cov):
 
 
 def _calculate_pathway_scores(
-    method, genesets, data_array, genes, aucell_threshold, type
+    method,
+    genesets,
+    data_array,
+    genes,
+    aucell_threshold,
+    type,
+    bina_logit_correction=0.1,
 ):
     """Calculate pathway scores using the specified method."""
     print(f"Calculating {method} scores...")
@@ -130,7 +136,7 @@ def _calculate_pathway_scores(
     elif method == "MEAN":
         scores = MEAN(genesets, data_array, genes)
     elif method == "BINA":
-        scores = BINA(genesets, data_array, genes)
+        scores = BINA(genesets, data_array, genes, correction=bina_logit_correction)
     elif method == "AUCELL":
         scores = AUCELL(genesets, data_array, genes, aucell_threshold)
     elif method == "JASMINE":
@@ -159,6 +165,7 @@ def gene2path(
     aucell_threshold: float = 0.05,
     variance_filter_threshold: Optional[float] = None,
     type: Literal["oddsratio", "likelihood"] = "oddsratio",
+    bina_logit_correction: float = 0.1,
 ) -> pd.DataFrame:
     """
     Transform gene-level data to pathway-level scores using single-sample methods.
@@ -235,7 +242,13 @@ def gene2path(
 
     # Calculate pathway scores based on method
     scores = _calculate_pathway_scores(
-        method, genesets, data_array, genes, aucell_threshold, type
+        method,
+        genesets,
+        data_array,
+        genes,
+        aucell_threshold,
+        type,
+        bina_logit_correction=bina_logit_correction,
     )
 
     # Create result DataFrame

@@ -12,13 +12,21 @@ def _ratio(geneset, data, genes, gs_name=""):
     return gs_expression
 
 
-def BINA(genesets, data, genes):
+def BINA(genesets, data, genes, correction=0.1):
+    """
+    Calculate BINA scores with logit correction parameter.
+    Args:
+        genesets: dict of gene sets
+        data: np.ndarray, gene expression data
+        genes: list of gene names
+        correction: float, logit correction parameter (default 0.1)
+    Returns:
+        np.ndarray: BINA scores
+    """
     res = np.empty((len(genesets), data.shape[1]))
     for i, (gs_name, geneset_genes) in tqdm(
         enumerate(genesets.items()), total=len(genesets)
     ):
         res[i] = _ratio(geneset_genes, data, genes, gs_name)
-
-    # Calculate BINA: log((DR + 0.1) / (1 - DR + 0.1))
-    bina_scores = np.log((res + 0.1) / (1 - res + 0.1))
+    bina_scores = np.log((res + correction) / (1 - res + correction))
     return bina_scores

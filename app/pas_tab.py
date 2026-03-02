@@ -28,6 +28,7 @@ def pas_tab():
         key="variance_filter",
     )
     aucell_threshold = None
+    bina_logit_correction = None
     if method == "AUCELL":
         aucell_threshold = st.slider(
             "AUCELL threshold (fraction of top genes)",
@@ -36,6 +37,19 @@ def pas_tab():
             0.05,
             0.01,
             key="aucell_thr",
+        )
+    if method == "BINA":
+        # Show user-friendly values for correction parameter
+        correction_options = [0.00001, 0.0001, 0.001, 0.01, 0.1]
+        bina_logit_correction = st.select_slider(
+            "BINA logit correction",
+            options=correction_options,
+            value=0.1,
+            format_func=lambda x: (
+                str(x).rstrip("0").rstrip(".") if "." in str(x) else str(x)
+            ),
+            key="bina_logit_corr",
+            help="Correction parameter for logit transform: log((DR+c)/(1-DR+c)). Choose c.",
         )
     type_option = None
     if method == "JASMINE":
@@ -75,6 +89,10 @@ def pas_tab():
             kwargs["aucell_threshold"] = (
                 aucell_threshold if aucell_threshold is not None else 0.05
             )
+        if method == "BINA":
+            # Convert log10(c) to c
+            c = 10**bina_logit_correction if bina_logit_correction is not None else 0.1
+            kwargs["bina_logit_correction"] = c
         if method == "JASMINE":
             kwargs["type"] = type_option
 
